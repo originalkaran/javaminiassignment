@@ -1,17 +1,28 @@
 package com.javaassignment.api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String firstName;
     private String nationality;
     private String gender;
     private int age;
     private String dob;
     private String verificationResult;
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated;
+
+    public User(){
+
+    }
 
     public User(String firstName, String nationality, String gender, int age, String dob, String verificationResult){
         this.firstName = firstName;
@@ -22,6 +33,14 @@ public class User {
         this.verificationResult = "TO_BE_VERIFIED";
     }
 
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getFirstName() {
         return firstName;
     }
@@ -68,5 +87,18 @@ public class User {
 
     public void setVerificationResult(String verificationResult) {
         this.verificationResult = verificationResult;
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        dateCreated = LocalDateTime.now();
     }
 }

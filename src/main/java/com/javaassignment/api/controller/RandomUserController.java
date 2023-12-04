@@ -4,10 +4,10 @@ import com.javaassignment.api.model.User;
 import com.javaassignment.api.service.RandomUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -33,42 +33,34 @@ public class RandomUserController {
 
     @GetMapping("/nationality")
     public ResponseEntity<String> getNationality() {
-            // Call the second API (nationality) with the provided name
-            String nationalityResponse = randomUserService.getNationality();
+        // Call the second API (nationality) with the provided name
+        String nationalityResponse = randomUserService.getNationality();
 
-            // Modify this part based on your requirements
-            if (nationalityResponse != null) {
-                return ResponseEntity.ok(nationalityResponse);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
-            }
+        // Modify this part based on your requirements
+        if (nationalityResponse != null) {
+            return ResponseEntity.ok(nationalityResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
         }
-
+    }
 
     @GetMapping("/gender")
     public ResponseEntity<String> getGender() {
-            // Call the third API (gender) with the provided name
-            String genderResponse = randomUserService.getGender();
+        // Call the third API (gender) with the provided name
+        String genderResponse = randomUserService.getGender();
 
-            // Modify this part based on your requirements
-            if (genderResponse != null) {
-                return ResponseEntity.ok(genderResponse);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
-            }
-
+        // Modify this part based on your requirements
+        if (genderResponse != null) {
+            return ResponseEntity.ok(genderResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
+        }
     }
 
     @GetMapping("/verifyuser")
     public ResponseEntity<String> verifyUser() {
-        // Call the getRandomUser method from the service to get the user information
-        String randomUserResponse = randomUserService.getRandomUser();
-
-        // Parse the user information to get the required parameters
-        User user = randomUserService.getParsedUser(randomUserResponse);
-
         // Call the verifyUser method from the service to get the verification result
-        String verificationResult = randomUserService.verifyUser(user);
+        String verificationResult = randomUserService.verifyUser();
 
         // Modify this part based on your requirements
         if (verificationResult != null) {
@@ -77,4 +69,32 @@ public class RandomUserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
         }
     }
+
+
+    @PostMapping("/user")
+    public ResponseEntity<String> createUser(@RequestParam(defaultValue = "1") int size) {
+        // Call the createUser method from the service to create and verify the user
+        String userCreationResponse = randomUserService.createUser(size);
+
+        // Modify this part based on your requirements
+        if (userCreationResponse != null) {
+            return ResponseEntity.ok(userCreationResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
+        }
+    }
+
+    @GetMapping("/recentusers")
+    public ResponseEntity<String> getRecentUsers(@RequestParam(name = "limit", defaultValue = "2") int limit) {
+        // Call the service method to get recent users
+        String recentUsersResponse = randomUserService.getRecentUsers(limit);
+
+        // Modify this part based on your requirements
+        if (recentUsersResponse != null) {
+            return ResponseEntity.ok(recentUsersResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
+        }
+    }
+
 }
