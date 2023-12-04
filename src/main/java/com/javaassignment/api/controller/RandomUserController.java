@@ -85,9 +85,10 @@ public class RandomUserController {
     }
 
     @GetMapping("/recentusers")
-    public ResponseEntity<String> getRecentUsers(@RequestParam(name = "limit", defaultValue = "2") int limit) {
-        // Call the service method to get recent users
-        String recentUsersResponse = randomUserService.getRecentUsers(limit);
+    public ResponseEntity<String> getRecentUsers(
+            @RequestParam(name = "limit", defaultValue = "4") int limit,
+            @RequestParam(name = "offset", defaultValue = "1") int offset) {
+        String recentUsersResponse = randomUserService.getRecentUsers(limit, offset);
 
         // Modify this part based on your requirements
         if (recentUsersResponse != null) {

@@ -101,9 +101,17 @@ public class RandomUserServiceImpl implements RandomUserService {
     }
 
     @Override
-    public String getRecentUsers(int limit) {
+    public String getRecentUsers(int limit, int offset) {
         try {
-            Pageable pageable = PageRequest.of(0, limit);
+
+            if (limit < 1 || limit > 5) {
+                throw new IllegalArgumentException("size must be between 1 and 5.");
+            }
+            if (offset < 0) {
+                throw new IllegalArgumentException("Offset must be non-negative.");
+            }
+
+            Pageable pageable = PageRequest.of(offset, limit);
             List<User> recentUsers = userRepository.findTopNOrderedByIdDesc(pageable);
 
             // Format the list of users for the response

@@ -8,7 +8,7 @@ import java.util.List;
 public interface RandomUserService {
     String createUser(int size);
 
-    String getRecentUsers(int limit);
+    String getRecentUsers(int limit, int offset);
 
     String getRandomUser();
 
