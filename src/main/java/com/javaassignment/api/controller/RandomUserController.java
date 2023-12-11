@@ -86,9 +86,11 @@ public class RandomUserController {
 
     @GetMapping("/recentusers")
     public ResponseEntity<String> getRecentUsers(
-            @RequestParam(name = "limit", defaultValue = "4") int limit,
-            @RequestParam(name = "offset", defaultValue = "1") int offset) {
-        String recentUsersResponse = randomUserService.getRecentUsers(limit, offset);
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
+            @RequestParam(name = "offset", defaultValue = "0") int offset,
+            @RequestParam(name = "sortType", defaultValue = "Name") String sortType,
+            @RequestParam(name = "sortOrder", defaultValue = "Odd") String sortOrder) {
+        String recentUsersResponse = randomUserService.getRecentUsers(limit, offset, sortType, sortOrder);
 
         // Modify this part based on your requirements
         if (recentUsersResponse != null) {
@@ -97,5 +99,4 @@ public class RandomUserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
         }
     }
-
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javaassignment.api.model.User;
 import com.javaassignment.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -101,9 +102,9 @@ public class RandomUserServiceImpl implements RandomUserService {
     }
 
     @Override
-    public String getRecentUsers(int limit, int offset) {
+    public String getRecentUsers(int limit, int offset, String sortType, String sortOrder) {
         try {
-
+            // Validate limit and offset
             if (limit < 1 || limit > 5) {
                 throw new IllegalArgumentException("size must be between 1 and 5.");
             }
@@ -111,17 +112,40 @@ public class RandomUserServiceImpl implements RandomUserService {
                 throw new IllegalArgumentException("Offset must be non-negative.");
             }
 
+            // Create a Pageable instance for pagination
             Pageable pageable = PageRequest.of(offset, limit);
-            List<User> recentUsers = userRepository.findTopNOrderedByIdDesc(pageable);
+
+            // Get the list of users based on sorting criteria
+            List<User> sortedUsers = getSortedUsers(sortType, sortOrder, pageable);
 
             // Format the list of users for the response
-            return formatRecentUsersResponse(recentUsers);
+            return formatRecentUsersResponse(sortedUsers);
         } catch (Exception e) {
             // Handle any exceptions during the process
             e.printStackTrace();
             return "Error fetching recent users.";
         }
     }
+
+    private List<User> getSortedUsers(String sortType, String sortOrder, Pageable pageable) {
+        if ("Name".equalsIgnoreCase(sortType)) {
+            // Sort by Name
+            return sortOrder.equalsIgnoreCase("Odd") ?
+                    userRepository.findAllOrderByOddNameLength(pageable).getContent() :
+                    userRepository.findAllOrderByEvenNameLength(pageable).getContent();
+        } else if ("Age".equalsIgnoreCase(sortType)) {
+            // Sort by Age
+            return sortOrder.equalsIgnoreCase("Even") ?
+                    userRepository.findAllOrderByEvenAge(pageable).getContent() :
+                    userRepository.findAllOrderByOddAge(pageable).getContent();
+        } else {
+            // Default sorting if invalid parameters are provided
+            return userRepository.findTopNOrderedByIdDesc(pageable).getContent();
+        }
+    }
+
+
+
 
     private String formatRecentUsersResponse(List<User> users) throws JsonProcessingException {
         // Create a list to store formatted user responses

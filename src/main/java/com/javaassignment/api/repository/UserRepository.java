@@ -12,5 +12,18 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     // Additional query methods can be added here if needed
     @Query("SELECT u FROM User u ORDER BY u.id DESC")
-    List<User> findTopNOrderedByIdDesc(Pageable pageable);
+    Page<User> findTopNOrderedByIdDesc(Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE MOD(u.age, 2) = 0")
+    Page<User> findAllOrderByEvenAge(Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE MOD(LENGTH(u.firstName), 2) = 1")
+    Page<User> findAllOrderByOddNameLength(Pageable pageable);
+
+
+    @Query("SELECT u FROM User u WHERE MOD(LENGTH(u.firstName), 2) = 0")
+    Page<User> findAllOrderByEvenNameLength(Pageable pageable);
+
+    @Query("SELECT u FROM User u WHERE MOD(u.age, 2) = 1")
+    Page<User> findAllOrderByOddAge(Pageable pageable);
 }
