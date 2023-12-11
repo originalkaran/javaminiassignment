@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javaassignment.api.model.User;
 import com.javaassignment.api.repository.UserRepository;
+import com.javaassignment.api.validator.EnglishAlphabetsValidator;
+import com.javaassignment.api.validator.NumericValidator;
+import com.javaassignment.api.validator.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -104,16 +107,28 @@ public class RandomUserServiceImpl implements RandomUserService {
     @Override
     public String getRecentUsers(int limit, int offset, String sortType, String sortOrder) {
         try {
-            // Validate limit and offset
+//            // Validate limit and offset
+//            NumericValidator numericValidator = (NumericValidator) ValidatorFactory.getValidator("numeric");
+//            if (!numericValidator.validate(limit) || !numericValidator.validate(offset)) {
+//                return "Invalid limit or offset.";
+//            }
+
+            // Validate limit and offset range
             if (limit < 1 || limit > 5) {
-                throw new IllegalArgumentException("size must be between 1 and 5.");
+                return "Size must be between 1 and 5.";
             }
             if (offset < 0) {
-                throw new IllegalArgumentException("Offset must be non-negative.");
+                return "Offset must be non-negative.";
             }
 
             // Create a Pageable instance for pagination
             Pageable pageable = PageRequest.of(offset, limit);
+
+//            // Validate sortType and sortOrder
+//            EnglishAlphabetsValidator alphabetsValidator = (EnglishAlphabetsValidator) ValidatorFactory.getValidator("alphabets");
+//            if (!alphabetsValidator.validate(sortType) || !alphabetsValidator.validate(sortOrder)) {
+//                return "Invalid sortType or sortOrder.";
+//            }
 
             // Get the list of users based on sorting criteria
             List<User> sortedUsers = getSortedUsers(sortType, sortOrder, pageable);
